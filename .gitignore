@@ -1,0 +1,14 @@
+output/
+*_local.conf
+.idea/
+.DS_Store
+*.swp
+.vscode
+*.log
+.bash_profile
+log/
+cover.out
+c.out
+vendor/
+env/
+testdata
