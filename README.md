@@ -13,7 +13,9 @@ go_gen model -ddlPath internal/testdata/test.sql -output internal/testdata -over
 ```bash
 cd xxx_repo(e.g. cd go_gen)
 # gen all 
-go_gen model -ddlPath "user:password@tcp(127.0.0.1:3306)/test" -output internal/testdata/dbmodels -override -initialisms
+go_gen model -ddlPath "userName:password@tcp(IP:Port)/DBName" -output internal/testdata/dbmodels -override -initialisms
 # specify some tables
-go_gen model -ddlPath "user:password@tcp(127.0.0.1:3306)/test" -output internal/testdata/dbmodels -override -initialisms -tables test1,a
+go_gen model -ddlPath "userName:password@tcp(IP:Port)/DBName" -output internal/testdata/dbmodels -override -initialisms -tables test1,a
+# output to cmd window instead of files
+go_gen model -ddlPath "userName:password@tcp(IP:Port)/DBName" -output CMD -override -initialisms -tables test1,a
 ```

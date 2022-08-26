@@ -3,6 +3,7 @@ package model
 import (
 	"bytes"
 	"fmt"
+	"log"
 	"strings"
 	"text/template"
 
@@ -26,6 +27,7 @@ const (
 type Generator struct {
 	ddl         *sqlparser.DDL
 	output      string
+	output2Cmd  bool
 	initialisms bool
 	override    bool
 }
@@ -34,26 +36,32 @@ func NewGenerator(ddl *sqlparser.DDL, output string, initialisms bool, override 
 	return &Generator{
 		ddl:         ddl,
 		output:      output,
+		output2Cmd:  output == consts.CmdKey,
 		initialisms: initialisms,
 		override:    override,
 	}
 }
 
 func (g *Generator) Generate() error {
-	if err := g.checkAndCreateDir(); err != nil {
-		return err
+	var moduleName string
+	var err error
+	if !g.output2Cmd { // output to file
+		if err = g.checkAndCreateDir(); err != nil {
+			return err
+		}
+
+		if util.IsFileExists(g.getFilePath()) && !g.override {
+			// file exists and override is false
+			color.Yellow("%s already exists, skip", g.getFileName())
+			return nil
+		}
 	}
 
-	if util.IsFileExists(g.getFilePath()) && !g.override {
-		// file exists and override is false
-		color.Yellow("%s already exists, skip", g.getFileName())
-		return nil
-	}
-
-	moduleName, err := util.GetModuleNameByPath(g.output)
+	moduleName, err = util.GetModuleNameByPath(g.output)
 	if err != nil {
 		return err
 	}
+
 	fields := g.getTableFields()
 
 	tpl_ := template.Must(template.New(g.getFileName()).Parse(tpl.ModelTpl))
@@ -70,12 +78,16 @@ func (g *Generator) Generate() error {
 	}
 	content := buf.Bytes()
 
-	if err = util.WriteFile(g.getFilePath(), content, true); err != nil {
-		return err
-	}
+	if !g.output2Cmd {
+		if err = util.WriteFile(g.getFilePath(), content, true); err != nil {
+			return err
+		}
 
-	if err = util.GoImportFile(g.getFilePath()); err != nil {
-		return err
+		if err = util.GoImportFile(g.getFilePath()); err != nil {
+			return err
+		}
+	} else {
+		log.Println(g.getModelName() + "\n" + string(content))
 	}
 
 	return nil

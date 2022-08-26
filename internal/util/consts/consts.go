@@ -87,4 +87,5 @@ var (
 const (
 	DDLQLSeparator          = ";\n"
 	CreateTablePrefixRegExp = `(?i)^(\s)*(create)(\s)+table.*`
+	CmdKey                  = "CMD"
 )

@@ -70,7 +70,7 @@ type genModelBySQL struct {
 }
 
 func (g *genModelBySQL) Run() error {
-	if err := g.check(); err != nil {
+	if err := g.checkAndInit(); err != nil {
 		return err
 	}
 
@@ -99,7 +99,7 @@ func (g *genModelBySQL) Run() error {
 	return nil
 }
 
-func (g *genModelBySQL) check() error {
+func (g *genModelBySQL) checkAndInit() error {
 	if g.ddlPath == "" {
 		return errors.New("ddlPath file must be specified")
 	}

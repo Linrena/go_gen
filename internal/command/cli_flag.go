@@ -18,7 +18,7 @@ var (
 	}
 	outputFlag = &cli.StringFlag{
 		Name:        outputFlagName,
-		Usage:       "output dir(absolute or relative)",
+		Usage:       "output dir(absolute or relative or output to cmd if input CMD)",
 		Required:    false,
 		DefaultText: "default: .",
 	}
